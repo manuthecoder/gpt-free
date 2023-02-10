@@ -1,0 +1,27 @@
+.MuiTouchRipple-rippleVisible {
+  animation-duration: 0.25s !important;
+}
+
+.MuiTouchRipple-child {
+  filter: opacity(0.3) !important;
+  background: hsl(240, 11%, 10%);
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  .MuiTouchRipple-child {
+    filter: opacity(0.3) !important;
+    background: hsl(240, 11%, 90%);
+  }
+}
+
+*:not(
+    .override-font,
+    .override-font *,
+    .material-symbols-outlined,
+    .material-symbols-outlined *
+  ) {
+  font-family: "DM Sans", sans-serif !important;
+}
