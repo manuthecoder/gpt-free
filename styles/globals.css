@@ -2,19 +2,14 @@
   animation-duration: 0.25s !important;
 }
 
-.MuiTouchRipple-child {
-  filter: opacity(0.3) !important;
+body,
+html {
+  color-scheme: dark;
   background: hsl(240, 11%, 10%);
 }
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  .MuiTouchRipple-child {
-    filter: opacity(0.3) !important;
-    background: hsl(240, 11%, 90%);
-  }
+.MuiTouchRipple-child {
+  filter: opacity(0.3) !important;
+  background: hsl(240, 11%, 90%);
 }
 
 *:not(
@@ -24,4 +19,8 @@
     .material-symbols-outlined *
   ) {
   font-family: "DM Sans", sans-serif !important;
+}
+
+* {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }

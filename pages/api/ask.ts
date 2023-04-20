@@ -14,7 +14,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const client = new Client();
-  const { prompt }: any = req.query;
+  const { prompt }: any = JSON.parse(req.body);
 
   if (!prompt) {
     res.status(403).json({
