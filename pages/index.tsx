@@ -23,6 +23,20 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "react-hot-toast";
 
+const toastStyles = {
+  style: {
+    borderRadius: "25px",
+    paddingLeft: "15px",
+    background: "hsla(240,11%,20%, 0.9)",
+    backdropFilter: "blur(10px)",
+    color: "hsl(240,11%,90%)",
+  },
+  iconTheme: {
+    primary: "hsl(240,11%,90%)",
+    secondary: "hsl(240,11%,30%)",
+  },
+};
+
 export default function Home() {
   const ref: any = useRef();
   const [value, setValue] = useState<string>("");
@@ -55,7 +69,8 @@ export default function Home() {
       setResponse(data);
     } catch (e) {
       toast.error(
-        "Yikes! mGPT could not think properly (possible because we are at capacity)! Please try again later"
+        "Yikes! mGPT could not think properly (possible because we are at capacity)! Please try again later",
+        toastStyles
       );
       setLoading(false);
       setResponse(null);
