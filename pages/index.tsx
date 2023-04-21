@@ -43,7 +43,11 @@ export default function Home() {
 
       setResponse(data);
     } catch (e) {
-      toast.error("Yikes! mGPT could not think properly");
+      toast.error(
+        "Yikes! mGPT could not think properly (possible because we are at capacity)! Please try again later"
+      );
+      setLoading(false);
+      setResponse(null);
     }
   }, [deferredValue]);
 
@@ -57,7 +61,6 @@ export default function Home() {
         />{" "}
         <meta name="theme-color" content="#17171c" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box
         sx={{
