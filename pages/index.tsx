@@ -1,5 +1,11 @@
 import Head from "next/head";
-import { useState, useDeferredValue, useCallback } from "react";
+import {
+  useState,
+  useDeferredValue,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -18,6 +24,7 @@ import remarkGfm from "remark-gfm";
 import { toast } from "react-hot-toast";
 
 export default function Home() {
+  const ref: any = useRef();
   const [value, setValue] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<any>(null);
@@ -27,6 +34,10 @@ export default function Home() {
     let str = e.target.value.substring(0, 3000);
     if (str.length === 1) str = str.toUpperCase();
     setValue(str);
+  }, []);
+
+  useEffect(() => {
+    ref.current?.focus();
   }, []);
 
   const handleSubmit = useCallback(async () => {
@@ -86,7 +97,7 @@ export default function Home() {
           }}
         >
           <TextField
-            autoFocus
+            inputRef={ref}
             multiline
             fullWidth
             value={value}
