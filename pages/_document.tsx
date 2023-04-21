@@ -12,6 +12,10 @@ export default function Document() {
           href="https://fonts.gstatic.com"
           crossOrigin="crossOrigin"
         />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, user-scalable=no, interactive-widget=resizes-content"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap"
           rel="stylesheet"

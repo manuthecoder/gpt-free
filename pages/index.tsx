@@ -68,6 +68,7 @@ export default function Home() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          background: "#17171c",
           height: "100vh",
           width: "100vw",
         }}
