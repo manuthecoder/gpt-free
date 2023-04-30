@@ -45,7 +45,7 @@ export default function Home() {
   const deferredValue = useDeferredValue(value);
 
   const handleChange = useCallback((e: any) => {
-    let str = e.target.value.substring(0, 10000);
+    let str = e.target.value.substring(0, 100000);
     if (str.length === 1) str = str.toUpperCase();
     setValue(str);
   }, []);
