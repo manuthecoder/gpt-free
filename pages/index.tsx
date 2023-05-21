@@ -124,7 +124,7 @@ export default function Home() {
               if (e.shiftKey && e.key === "Enter") {
                 setValue(value + "\n");
                 e.preventDefault();
-              } else if (e.key === "Enter") {
+              } else if (!e.shiftKey && e.key === "Enter") {
                 e.preventDefault();
                 handleSubmit();
               }
