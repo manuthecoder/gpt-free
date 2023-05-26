@@ -1,31 +1,18 @@
-import "../styles/globals.css";
+import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { Toaster } from "react-hot-toast";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
-const darkTheme = createTheme({
+const theme = createTheme({
   palette: {
     mode: "dark",
-  },
-  components: {
-    MuiButton: {
-      defaultProps: {
-        style: {
-          textTransform: "none",
-          gap: "15px",
-        },
-      },
-    },
   },
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Toaster />
+    <ThemeProvider theme={theme}>
       <Component {...pageProps} />
+      <CssBaseline />
     </ThemeProvider>
   );
 }

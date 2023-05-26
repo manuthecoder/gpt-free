@@ -4,25 +4,19 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="shortcut icon" href="/icons/48.png" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossOrigin="crossOrigin"
-        />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, user-scalable=no, interactive-widget=resizes-content"
+          crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
         />
       </Head>
       <body>

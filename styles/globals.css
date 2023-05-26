@@ -1,29 +1,23 @@
-.MuiTouchRipple-rippleVisible {
-  animation-duration: 0.25s !important;
-}
-
-body,
-html {
-  color-scheme: dark;
+body {
   background: hsl(240, 11%, 10%);
 }
-.MuiTouchRipple-child {
-  filter: opacity(0.3) !important;
-  background: hsl(240, 11%, 90%);
+
+.MuiIcon-root {
+  font-family: "Material Symbols Outlined" !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
 }
 
-*:not(
-    .override-font,
-    .override-font *,
-    .material-symbols-outlined,
-    .material-symbols-outlined *
-  ) {
-  font-family: "DM Sans", sans-serif !important;
-}
-
-* {
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-}
-::-webkit-scrollbar {
-  display: none
+*:not(.MuiIcon-root, .MuiIcon-root *) {
+  font-family: "Work Sans", sans-serif !important;
 }
