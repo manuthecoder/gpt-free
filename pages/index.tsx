@@ -9,14 +9,14 @@ import {
   Grid,
   Chip,
 } from "@mui/material";
-import { useDeferredValue, useState } from "react";
+import { useCallback, useDeferredValue, useState } from "react";
 
 interface Chat {
   prompt: string;
   response: string;
 }
 
-function History({ history, setPrompt, setResponse }: any) {
+function History({ history }: any) {
   return (
     <Box
       sx={{
@@ -51,24 +51,23 @@ export default function App() {
   const [history, setHistory] = useState<Chat[]>([]);
   const [response, setResponse] = useState<null | Chat>(null);
 
-  const [loading, setLoading] = useState("");
-  const [error, setError] = useState<null | any>(null);
+  const handleSubmit = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      if (prompt.trim() == "") return;
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    if (e.target.value.trim() == "") return;
-    const value = e.target.value || "";
+      const data: any = await fetch("/api/chat", {
+        method: "POST",
+        body: JSON.stringify({ prompt }),
+      }).then((res) => res.text());
 
-    const data: any = await fetch("/api/chat", {
-      method: "POST",
-      body: JSON.stringify({ prompt: value }),
-    }).then((res) => res.text());
-
-    const current = [...history, { prompt: e.target.value, response: data }];
-    setHistory(current);
-
-    setResponse(history[history.length - 1]);
-  };
+      const current = [...history, { prompt, response: data }];
+      console.log("Current: ", current);
+      setHistory(current);
+      console.log("History: ", history);
+    },
+    [history, prompt]
+  );
 
   return (
     <>
@@ -80,10 +79,7 @@ export default function App() {
         }}
       >
         <Toolbar>
-          <Typography>
-            mGPT
-            {JSON.stringify(response)}
-          </Typography>
+          <Typography>mGPT</Typography>
         </Toolbar>
       </AppBar>
       <Grid container>
@@ -132,6 +128,7 @@ export default function App() {
                 multiline
               />
               <IconButton
+                onClick={handleSubmit}
                 sx={{
                   mt: "auto",
                   ...(deferredPrompt.trim() !== "" && {
@@ -148,11 +145,7 @@ export default function App() {
               </IconButton>
             </Box>
 
-            <History
-              history={history}
-              setPrompt={setPrompt}
-              setResponse={setResponse}
-            />
+            <History history={history} />
           </Box>
         </Grid>
         {response && (
