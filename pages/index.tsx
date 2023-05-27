@@ -9,7 +9,7 @@ import {
   Grid,
   Chip,
 } from "@mui/material";
-import { useCallback, useDeferredValue, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useState } from "react";
 
 interface Chat {
   prompt: string;
@@ -64,10 +64,13 @@ export default function App() {
       const current = [...history, { prompt, response: data }];
       console.log("Current: ", current);
       setHistory(current);
-      console.log("History: ", history);
     },
     [history, prompt]
   );
+
+  useEffect(() => {
+    setResponse(history[history.length - 1]);
+  }, [history]);
 
   return (
     <>
@@ -157,7 +160,16 @@ export default function App() {
               borderLeft: "2px solid hsl(240,11%,14%)",
             }}
           >
-            Hi
+            <Toolbar />
+            <Box sx={{ p: 4 }}>
+              <Typography
+                sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}
+              >
+                <Icon>south_east</Icon>mGPT
+              </Typography>
+              <Typography variant="h4">{response.prompt}</Typography>
+              <Typography>{response.response}</Typography>
+            </Box>
           </Grid>
         )}
       </Grid>
