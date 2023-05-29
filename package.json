@@ -24,6 +24,7 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-markdown": "^8.0.7",
+    "react-virtuoso": "^4.3.8",
     "remark-gfm": "^3.0.1",
     "typescript": "5.0.4"
   },

@@ -2,6 +2,7 @@
 @tailwind utilities;
 
 body {
+  user-select: none;
   background: hsl(240, 11%, 10%);
 }
 
@@ -23,6 +24,7 @@ body {
 
 * {
   color-scheme: dark;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 *:not(

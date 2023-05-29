@@ -3,9 +3,15 @@ import {
   Box,
   Chip,
   CircularProgress,
+  Dialog,
+  Divider,
   Grid,
   Icon,
   IconButton,
+  Link,
+  NoSsr,
+  Skeleton,
+  SwipeableDrawer,
   TextField,
   Toolbar,
   Tooltip,
@@ -30,24 +36,66 @@ interface Chat {
 }
 
 function Navbar() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <AppBar
-      position="fixed"
-      elevation={0}
-      sx={{
-        height: "64px",
-        background: "hsl(240,11%,14%)",
-      }}
-    >
-      <Toolbar sx={{ height: "64px" }}>
-        <Typography sx={{ display: "flex", gap: 2, mr: "auto" }}>
-          <Icon>south_east</Icon>mGPT
-        </Typography>
-        <IconButton>
-          <Icon>info</Icon>
-        </IconButton>
-      </Toolbar>
-    </AppBar>
+    <>
+      <SwipeableDrawer
+        disableSwipeToOpen
+        anchor="bottom"
+        open={open}
+        onClose={() => setOpen(false)}
+        onOpen={() => {}}
+        PaperProps={{
+          sx: {
+            maxWidth: "500px",
+            borderRadius: "20px 20px 0 0",
+            mx: "auto",
+          },
+        }}
+      >
+        <Box sx={{ p: 4 }}>
+          <Typography variant="h4" className="font-serif">
+            mGPT
+          </Typography>
+          <Typography sx={{ mt: 1 }}>Version 2.0</Typography>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="body1">
+            This is a mini clone of{" "}
+            <Link href="https://chat.openai.com" target="_blank">
+              ChatGPT
+            </Link>{" "}
+            made by{" "}
+            <Link href="https://linkedin.com/in/manu-codes" target="_blank">
+              Manu
+            </Link>
+            . The author of this project is not responsible for any misuse of
+            this project. This project is not affiliated with OpenAI.
+          </Typography>
+        </Box>
+      </SwipeableDrawer>
+      <AppBar
+        position="fixed"
+        elevation={0}
+        sx={{
+          height: "64px",
+          background: "hsl(240,11%,14%)",
+        }}
+      >
+        <Toolbar sx={{ height: "64px" }}>
+          <NoSsr>
+            <Typography
+              sx={{ display: "flex", gap: 2, mr: "auto", alignItems: "center" }}
+            >
+              <Icon>south_east</Icon>mGPT <Chip label="v2.0" size="small" />
+            </Typography>
+          </NoSsr>
+          <IconButton onClick={() => setOpen(true)}>
+            <Icon>info</Icon>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    </>
   );
 }
 
@@ -65,7 +113,7 @@ export default function App() {
   const deferredPrompt = useDeferredValue(prompt);
 
   const [history, setHistory] = useState<Chat[]>([]);
-  const [response, setResponse] = useState<null | Chat>(null);
+  const [response, setResponse] = useState<"loading" | null | Chat>(null);
 
   const handleSubmit = useCallback(
     async (e: any) => {
@@ -73,6 +121,7 @@ export default function App() {
       if (prompt.trim() == "") return;
       try {
         setLoading(true);
+        setResponse("loading");
 
         const data: any = await fetch("/api/chat", {
           method: "POST",
@@ -85,6 +134,7 @@ export default function App() {
         setLoading(false);
       } catch (e) {
         setLoading(false);
+        setResponse(null);
       }
     },
     [history, prompt]
@@ -115,7 +165,7 @@ export default function App() {
         <Grid
           item
           xs={12}
-          sm={response ? 6 : 12}
+          sm={response ? 4 : 12}
           sx={{
             maxHeight: "calc(100vh - 64px)",
             overflow: "auto",
@@ -132,7 +182,7 @@ export default function App() {
             sx={{
               width: "500px",
               background: "hsl(240,11%,15%)",
-              maxWidth: "calc(100vw - 20px)",
+              maxWidth: "calc(100% - 50px)",
               display: "flex",
               borderRadius: 5,
               px: 3,
@@ -183,7 +233,13 @@ export default function App() {
               {loading ? (
                 <CircularProgress size={24} thickness={6} color="inherit" />
               ) : (
-                <Icon>arrow_upward</Icon>
+                <Icon>
+                  {response &&
+                  response !== "loading" &&
+                  prompt == response.prompt
+                    ? "autorenew"
+                    : "arrow_upward"}
+                </Icon>
               )}
             </IconButton>
           </Box>
@@ -192,8 +248,8 @@ export default function App() {
               display: history.length > 0 ? "none" : "flex",
               gap: 2,
               flexWrap: "wrap",
-              maxWidth: "100%",
               width: "500px",
+              maxWidth: "calc(100% - 50px)",
               alignItems: "center",
               // justifyContent: "center",
               px: 2,
@@ -229,56 +285,128 @@ export default function App() {
           <Grid
             item
             xs={12}
-            sm={6}
+            sm={8}
             sx={{
               borderLeft: "2px solid hsl(240,11%,14%)",
               maxHeight: "calc(100vh - 64px)",
               overflow: "auto",
             }}
           >
-            <Box sx={{ p: 4 }}>
-              <Typography
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 2,
-                  mb: 2,
-                  fontWeight: 700,
-                  color: "hsl(240,11%,80%)",
-                }}
-                variant="h6"
-              >
-                <Icon>south_east</Icon>You
-              </Typography>
-              <div className="prose lg:prose-xl prose-dark prose-invert">
-                <ReactMarkdown remarkPlugins={[remarkGfm]} linkTarget="_blank">
-                  {response.prompt}
-                </ReactMarkdown>
-              </div>
-              <Typography
-                id="response"
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 2,
-                  mt: 4,
-                  mb: 1,
-                  fontWeight: 700,
-                  background: "linear-gradient(90deg, #007AFF, #00FFA3)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  animation: "gradient .3s ease infinite",
-                }}
-                variant="h6"
-              >
-                <Icon>south_east</Icon>mGPT
-              </Typography>
-              <div className="prose lg:prose-xl prose-dark prose-invert">
-                <ReactMarkdown remarkPlugins={[remarkGfm]} linkTarget="_blank">
-                  {response.response}
-                </ReactMarkdown>
-              </div>
-            </Box>
+            {response === "loading" ? (
+              <Box sx={{ p: 3 }}>
+                <Skeleton
+                  variant="rectangular"
+                  width="200px"
+                  animation="wave"
+                  height={50}
+                  sx={{ borderRadius: 90, mb: 2 }}
+                />
+                {[...new Array(5)].map((_, i) => (
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    width="100%"
+                    height={30}
+                    key={i}
+                    sx={{ borderRadius: 90, mb: 2 }}
+                  />
+                ))}
+                <Skeleton
+                  variant="rectangular"
+                  animation="wave"
+                  width="200px"
+                  height={50}
+                  sx={{ mt: 4, mb: 2, borderRadius: 90 }}
+                />
+                {[...new Array(5)].map((_, i) => (
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    width="100%"
+                    height={30}
+                    key={i}
+                    sx={{ borderRadius: 90, mb: 2 }}
+                  />
+                ))}
+              </Box>
+            ) : (
+              <Box sx={{ p: 3, pt: 4 }}>
+                <Box
+                  sx={{
+                    background: "hsl(240,11%,15%)",
+                    p: 3,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 2,
+                      mb: 2,
+                      fontWeight: 700,
+                      color: "hsl(240,11%,80%)",
+                    }}
+                    variant="h6"
+                  >
+                    <Icon>south_east</Icon>You
+                  </Typography>
+                  <div
+                    className="prose lg:prose-xl prose-dark prose-invert"
+                    style={{
+                      userSelect: "text",
+                    }}
+                  >
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      linkTarget="_blank"
+                    >
+                      {response.prompt}
+                    </ReactMarkdown>
+                  </div>
+                </Box>
+                <Box
+                  id="response"
+                  sx={{
+                    background: "hsl(240,11%,15%)",
+                    p: 3,
+                    mt: 4,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Typography
+                    id="response"
+                    sx={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 2,
+                      mb: 1,
+                      fontWeight: 700,
+                      background: "linear-gradient(90deg, #007AFF, #00FFA3)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      animation: "gradient .3s ease infinite",
+                    }}
+                    variant="h6"
+                  >
+                    <Icon>south_east</Icon>mGPT
+                  </Typography>
+                  <div
+                    className="prose lg:prose-xl prose-dark prose-invert"
+                    style={{
+                      userSelect: "text",
+                    }}
+                  >
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      linkTarget="_blank"
+                    >
+                      {response.response}
+                    </ReactMarkdown>
+                  </div>
+                </Box>
+              </Box>
+            )}
           </Grid>
         )}
       </Grid>

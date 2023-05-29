@@ -8,6 +8,15 @@ const theme = createTheme({
   palette: {
     mode: "dark",
   },
+  components: {
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          background: "hsl(240,11%,20%)",
+        },
+      },
+    },
+  },
 });
 
 export const toastStyles = {

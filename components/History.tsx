@@ -7,6 +7,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import { Virtuoso } from "react-virtuoso";
 
 export function History({
   setHistory,
@@ -15,21 +16,25 @@ export function History({
   setPrompt,
   setResponse,
 }: any) {
+  const _history = history.slice().reverse();
   return (
     <Box
       sx={{
         width: "500px",
+        maxWidth: "calc(100% - 50px)",
         background: "hsl(240,11%,15%)",
-        maxWidth: "calc(100vw - 20px)",
         borderRadius: 5,
         px: 3,
         py: 2,
+        display: "flex",
+        flexDirection: "column",
         maxHeight: "100%",
-        overflowY: "auto",
+        height: "100%",
       }}
     >
       <Box
         sx={{
+          flexShrink: 0,
           display: "flex",
           mb: 1,
           pb: 1.5,
@@ -53,12 +58,19 @@ export function History({
           Clear
         </Button>
       </Box>
-      <Box>
-        {history
-          .slice()
-          .reverse()
-          .map((item: any, index: number) => (
-            <Box key={index}>
+      <Box
+        sx={{
+          height: "100%",
+          flexGrow: 1,
+        }}
+      >
+        <Virtuoso
+          style={{ height: "100%" }}
+          totalCount={_history.length}
+          itemContent={(index) => {
+            const item = _history[index];
+
+            return (
               <ListItemButton
                 disabled={loading}
                 sx={{
@@ -91,8 +103,9 @@ export function History({
                   secondary={`"${item.response.substring(0, 75)}"`}
                 />
               </ListItemButton>
-            </Box>
-          ))}
+            );
+          }}
+        />
       </Box>
     </Box>
   );
