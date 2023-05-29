@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-export function Navbar() {
+export function Navbar({ mobilePage, setMobilePage }: any) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -61,18 +61,27 @@ export function Navbar() {
           background: "hsl(240,11%,14%)",
         }}
       >
-        <Toolbar sx={{ height: "64px" }}>
-          <NoSsr>
+        <NoSsr>
+          <Toolbar sx={{ height: "64px" }}>
+            <IconButton onClick={() => setMobilePage("history")}>
+              <Icon>west</Icon>
+            </IconButton>
             <Typography
-              sx={{ display: "flex", gap: 2, mr: "auto", alignItems: "center" }}
+              sx={{
+                display: "flex",
+                pl: 1,
+                gap: 2,
+                mr: "auto",
+                alignItems: "center",
+              }}
             >
-              <Icon>south_east</Icon>mGPT <Chip label="v2.0" size="small" />
+              mGPT <Chip label="v2.0" size="small" />
             </Typography>
-          </NoSsr>
-          <IconButton onClick={() => setOpen(true)}>
-            <Icon>info</Icon>
-          </IconButton>
-        </Toolbar>
+            <IconButton onClick={() => setOpen(true)}>
+              <Icon>info</Icon>
+            </IconButton>
+          </Toolbar>
+        </NoSsr>
       </AppBar>
     </>
   );

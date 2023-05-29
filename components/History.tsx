@@ -12,6 +12,7 @@ import { Virtuoso } from "react-virtuoso";
 export function History({
   setHistory,
   loading,
+  setMobilePage,
   history,
   setPrompt,
   setResponse,
@@ -29,7 +30,7 @@ export function History({
         display: "flex",
         flexDirection: "column",
         maxHeight: "100%",
-        height: "100%",
+        height: { xs: "calc(100vh - 64px)", sm: "100%" },
       }}
     >
       <Box
@@ -82,6 +83,7 @@ export function History({
                 onClick={() => {
                   setPrompt(item.prompt);
                   setResponse(item);
+                  setMobilePage("chat");
                   setTimeout(() => {
                     document.querySelector("#response")?.scrollIntoView({
                       behavior: "smooth",

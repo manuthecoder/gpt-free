@@ -27,6 +27,7 @@ interface Chat {
 }
 
 export default function App() {
+  const [mobilePage, setMobilePage] = useState<"history" | "chat">("history");
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -49,6 +50,7 @@ export default function App() {
       try {
         setLoading(true);
         setResponse("loading");
+        setMobilePage("chat");
 
         const data: any = await fetch("/api/chat", {
           method: "POST",
@@ -60,6 +62,7 @@ export default function App() {
         setHistory(current);
         setLoading(false);
       } catch (e) {
+        setMobilePage("history");
         setLoading(false);
         setResponse(null);
       }
@@ -87,7 +90,7 @@ export default function App() {
 
   return (
     <>
-      <Navbar />
+      <Navbar mobilePage={mobilePage} setMobilePage={setMobilePage} />
       <Grid container sx={{ mt: "64px", height: "calc(100vh - 64px)" }}>
         <Grid
           item
@@ -98,7 +101,10 @@ export default function App() {
             overflow: "auto",
             flexDirection: "column",
             py: 4,
-            display: "flex",
+            display: {
+              xs: mobilePage == "history" ? "flex" : "none",
+              sm: "flex",
+            },
             alignItems: "center",
             justifyContent: history.length > 0 ? "" : "center",
             width: "100%",
@@ -200,6 +206,7 @@ export default function App() {
 
           {history.length > 0 && (
             <History
+            setMobilePage={setMobilePage}
               setHistory={setHistory}
               loading={loading}
               history={history}
@@ -217,6 +224,11 @@ export default function App() {
               borderLeft: "2px solid hsl(240,11%,14%)",
               maxHeight: "calc(100vh - 64px)",
               overflow: "auto",
+              display: {
+                xs: mobilePage == "chat" ? "block" : "none",
+                sm: "block",
+              },
+              height: { xs: "calc(100vh - 64px)", sm: "100%" },
             }}
           >
             {response === "loading" ? (
