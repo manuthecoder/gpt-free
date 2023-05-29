@@ -1,3 +1,6 @@
+@tailwind components;
+@tailwind utilities;
+
 body {
   background: hsl(240, 11%, 10%);
 }
@@ -18,6 +21,63 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-*:not(.MuiIcon-root, .MuiIcon-root *) {
+* {
+  color-scheme: dark;
+}
+
+*:not(
+    .MuiIcon-root,
+    .MuiIcon-root *,
+    .font-serif,
+    .font-serif *,
+    code,
+    code *,
+    blockquote,
+    blockquote *
+  ) {
   font-family: "Work Sans", sans-serif !important;
+}
+.font-serif,
+.font-serif *,
+blockquote,
+blockquote * {
+  font-family: "Fraunces", serif !important;
+}
+
+blockquote {
+  border-left: 2px solid hsl(240, 11%, 70%) !important;
+}
+td,
+tr,
+th {
+  padding: 10px !important;
+  border: 2px solid hsl(240, 11%, 30%) !important;
+}
+table {
+  border-collapse: collapse;
+}
+
+.MuiTouchRipple-rippleVisible {
+  animation-duration: 0.25s !important;
+}
+
+.MuiTouchRipple-child {
+  filter: opacity(0.3) !important;
+  background: hsl(240, 11%, 10%);
+}
+
+.rippleDark .MuiTouchRipple-child,
+.dark .MuiTouchRipple-child {
+  background: #fff !important;
+}
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

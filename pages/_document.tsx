@@ -15,8 +15,17 @@ export default function Document() {
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
+        />
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="description" content="Manu's mini ChatGPT clone" />
+        <meta name="theme-color" content="hsl(240,11%,14%)" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, user-scalable=no, interactive-widget=resizes-content"
         />
       </Head>
       <body>
