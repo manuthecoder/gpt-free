@@ -1,4 +1,6 @@
 import { History } from "@/components/History";
+import { Navbar } from "@/components/Navbar";
+import { Sponsor } from "@/components/Sponsor";
 import {
   Box,
   Chip,
@@ -19,7 +21,6 @@ import {
 } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Navbar } from "../components/Navbar";
 
 interface Chat {
   prompt: string;
@@ -231,56 +232,7 @@ export default function App() {
               setResponse={setResponse}
             />
           )}
-          {response && (
-            <Box
-              sx={{
-                width: "500px",
-                maxWidth: "calc(100% - 50px)",
-                background: "hsl(240,11%,15%)",
-                "&:hover": {
-                  background: "hsl(240,11%,17%)",
-                },
-                "&:active": {
-                  transition: "none",
-                  transform: "scale(0.97)",
-                },
-                transition: "transform .2s",
-                borderRadius: 5,
-                px: 3,
-                py: 2,
-                display: "flex",
-                flexDirection: "column",
-                maxHeight: "100%",
-              }}
-              onClick={() =>
-                window.open("https://dysperse.com?utm_source=mgpt")
-              }
-            >
-              <Typography variant="caption" gutterBottom>
-                SPONSORED
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "end" }}>
-                <Box>
-                  <Typography gutterBottom>
-                    Say hello to your new productivity weapon.
-                  </Typography>
-                  <Typography variant="body2" sx={{ display: "flex", gap: 1 }}>
-                    dysperse.com<Icon>north_east</Icon>
-                  </Typography>
-                </Box>
-                <Box sx={{ ml: "auto" }}>
-                  <picture>
-                    <img
-                      src="https://assets.dysperse.com/v5/ios/114.png"
-                      width="50px"
-                      loading="lazy"
-                      alt="logo"
-                    />
-                  </picture>
-                </Box>
-              </Box>
-            </Box>
-          )}
+          {response && <Sponsor />}
         </Grid>
         {response && (
           <Grid
