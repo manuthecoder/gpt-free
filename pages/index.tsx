@@ -1,17 +1,15 @@
+import { History } from "@/components/History";
 import {
   Box,
   Chip,
   CircularProgress,
-  Dialog,
   Grid,
   Icon,
   IconButton,
   Skeleton,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
-import remarkGfm from "remark-gfm";
 import {
   useCallback,
   useDeferredValue,
@@ -20,10 +18,8 @@ import {
   useState,
 } from "react";
 import ReactMarkdown from "react-markdown";
-import { History } from "@/components/History";
-import { toast } from "react-hot-toast";
-import { toastStyles } from "./_app";
-import { Navbar } from "./Navbar";
+import remarkGfm from "remark-gfm";
+import { Navbar } from "../components/Navbar";
 
 interface Chat {
   prompt: string;
