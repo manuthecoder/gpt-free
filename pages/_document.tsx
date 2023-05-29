@@ -22,7 +22,7 @@ export default function Document() {
 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="description" content="Manu's mini ChatGPT clone" />
-        <meta name="theme-color" content="hsl(240,11%,14%)" />
+        <meta name="theme-color" content="hsl(240,11%,12%)" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta
           name="viewport"

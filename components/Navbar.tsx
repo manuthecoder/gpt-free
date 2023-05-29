@@ -11,10 +11,24 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export function Navbar({ mobilePage, setMobilePage }: any) {
+export function Navbar({
+  loading,
+  response,
+  setHistory,
+  setPrompt,
+  setResponse,
+  mobilePage,
+  setMobilePage,
+}: any) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document
+      .querySelector(`meta[name="theme-color"]`)
+      ?.setAttribute("content", `hsl(240,11%,${response ? 14 : 12}%)`);
+  });
 
   return (
     <>
@@ -58,14 +72,31 @@ export function Navbar({ mobilePage, setMobilePage }: any) {
         elevation={0}
         sx={{
           height: "64px",
-          background: "hsl(240,11%,14%)",
+          background: `hsl(240,11%,${response ? 14 : 12}%)`,
         }}
       >
         <NoSsr>
           <Toolbar sx={{ height: "64px" }}>
-            <IconButton onClick={() => setMobilePage("history")}>
+            <IconButton
+              onClick={() => setMobilePage("history")}
+              sx={{ display: { sm: "none" } }}
+            >
               <Icon>west</Icon>
             </IconButton>
+            {mobilePage !== "history" && (
+              <IconButton
+                disabled={loading}
+                onClick={() => {
+                  setMobilePage("history");
+                  setHistory([]);
+                  setResponse(null);
+                  setPrompt("");
+                }}
+                sx={{ display: { xs: "none", sm: "flex" } }}
+              >
+                <Icon>close</Icon>
+              </IconButton>
+            )}
             <Typography
               sx={{
                 display: "flex",

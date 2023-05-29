@@ -11,9 +11,13 @@ const theme = createTheme({
   components: {
     MuiChip: {
       styleOverrides: {
-        root: {
-          background: "hsl(240,11%,20%)",
-        },
+        root: ({ theme }) =>
+          theme.unstable_sx({
+            background: "hsl(240,11%,16%)",
+            "&:hover": {
+              background: "hsl(240,11%,18%)",
+            },
+          }),
       },
     },
   },

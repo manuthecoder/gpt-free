@@ -90,8 +90,23 @@ export default function App() {
 
   return (
     <>
-      <Navbar mobilePage={mobilePage} setMobilePage={setMobilePage} />
-      <Grid container sx={{ mt: "64px", height: "calc(100vh - 64px)" }}>
+      <Navbar
+        response={response}
+        setHistory={setHistory}
+        mobilePage={mobilePage}
+        setMobilePage={setMobilePage}
+        setPrompt={setPrompt}
+        setResponse={setResponse}
+        loading={loading}
+      />
+      <Grid
+        container
+        sx={{
+          mt: "64px",
+          height: "calc(100vh - 64px)",
+          background: "hsl(240, 11%, 10%)",
+        }}
+      >
         <Grid
           item
           xs={12}
@@ -107,6 +122,7 @@ export default function App() {
             },
             alignItems: "center",
             justifyContent: history.length > 0 ? "" : "center",
+            background: `hsl(240, 11%, ${response ? 12 : 10}%)`,
             width: "100%",
             gap: 2,
           }}
@@ -190,12 +206,13 @@ export default function App() {
             }}
           >
             {[
-              "What is the meaning of life?",
+              "Write a paragraph about the history of the United States",
               "Explain quantum computing in simple terms",
               "Got any creative ideas for a 10 year old's birthday?",
               "How do I make an HTTP request in Javascript?",
             ].map((prompt) => (
               <Chip
+                disabled={loading}
                 icon={<Icon>search</Icon>}
                 onClick={() => setPrompt(prompt)}
                 label={prompt}
@@ -206,13 +223,63 @@ export default function App() {
 
           {history.length > 0 && (
             <History
-            setMobilePage={setMobilePage}
+              setMobilePage={setMobilePage}
               setHistory={setHistory}
               loading={loading}
               history={history}
               setPrompt={setPrompt}
               setResponse={setResponse}
             />
+          )}
+          {response && (
+            <Box
+              sx={{
+                width: "500px",
+                maxWidth: "calc(100% - 50px)",
+                background: "hsl(240,11%,15%)",
+                "&:hover": {
+                  background: "hsl(240,11%,17%)",
+                },
+                "&:active": {
+                  transition: "none",
+                  transform: "scale(0.97)",
+                },
+                transition: "transform .2s",
+                borderRadius: 5,
+                px: 3,
+                py: 2,
+                display: "flex",
+                flexDirection: "column",
+                maxHeight: "100%",
+              }}
+              onClick={() =>
+                window.open("https://dysperse.com?utm_source=mgpt")
+              }
+            >
+              <Typography variant="caption" gutterBottom>
+                SPONSORED
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "end" }}>
+                <Box>
+                  <Typography gutterBottom>
+                    Say hello to your new productivity weapon.
+                  </Typography>
+                  <Typography variant="body2" sx={{ display: "flex", gap: 1 }}>
+                    dysperse.com<Icon>north_east</Icon>
+                  </Typography>
+                </Box>
+                <Box sx={{ ml: "auto" }}>
+                  <picture>
+                    <img
+                      src="https://assets.dysperse.com/v5/ios/114.png"
+                      width="50px"
+                      loading="lazy"
+                      alt="logo"
+                    />
+                  </picture>
+                </Box>
+              </Box>
+            </Box>
           )}
         </Grid>
         {response && (
@@ -221,7 +288,7 @@ export default function App() {
             xs={12}
             sm={8}
             sx={{
-              borderLeft: "2px solid hsl(240,11%,14%)",
+              borderLeft: "2px solid hsl(240,11%,12%)",
               maxHeight: "calc(100vh - 64px)",
               overflow: "auto",
               display: {
@@ -275,8 +342,24 @@ export default function App() {
                     background: "hsl(240,11%,15%)",
                     p: 3,
                     borderRadius: 5,
+                    position: "relative",
                   }}
                 >
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      m: 3,
+                      color: "hsl(240,11%,80%)",
+                    }}
+                    onClick={() => {
+                      ref.current.focus();
+                      ref.current.select();
+                    }}
+                  >
+                    <Icon>edit</Icon>
+                  </IconButton>
                   <Typography
                     sx={{
                       display: "inline-flex",
@@ -291,7 +374,7 @@ export default function App() {
                     <Icon>south_east</Icon>You
                   </Typography>
                   <div
-                    className="prose lg:prose-xl prose-dark prose-invert"
+                    className="prose lg:prose-lg prose-dark prose-invert"
                     style={{
                       userSelect: "text",
                     }}
@@ -331,7 +414,7 @@ export default function App() {
                     <Icon>south_east</Icon>mGPT
                   </Typography>
                   <div
-                    className="prose lg:prose-xl prose-dark prose-invert"
+                    className="prose lg:prose-lg prose-dark prose-invert"
                     style={{
                       userSelect: "text",
                     }}
@@ -340,7 +423,9 @@ export default function App() {
                       remarkPlugins={[remarkGfm]}
                       linkTarget="_blank"
                     >
-                      {response.response}
+                      {response.response
+                        .replaceAll("Raycast", "mGPT")
+                        .replaceAll("raycast", "mGPT")}
                     </ReactMarkdown>
                   </div>
                 </Box>
