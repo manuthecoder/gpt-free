@@ -15,7 +15,7 @@ export default function Document() {
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,700&family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
         <link rel="manifest" href="/manifest.json" />

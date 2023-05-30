@@ -22,10 +22,15 @@ import {
 import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { toastStyles } from "./_app";
 
 interface Chat {
   prompt: string;
   response: string;
+}
+
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export default function App() {
@@ -33,13 +38,8 @@ export default function App() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: any) => {
-    if (prompt.length == 0) {
-      setPrompt(e.target.value.toUpperCase());
-    } else {
-      setPrompt(e.target.value);
-    }
-  };
+  const handleChange = (e: any) =>
+    setPrompt(capitalizeFirstLetter(e.target.value));
   const deferredPrompt = useDeferredValue(prompt);
 
   const [history, setHistory] = useState<Chat[]>([]);
@@ -64,7 +64,10 @@ export default function App() {
         setHistory(current);
         setLoading(false);
       } catch (e) {
-        toast.error("Yikes! mGPT couldn't think! Please try again later.");
+        toast.error(
+          "Yikes! mGPT couldn't think! Please try again later.",
+          toastStyles
+        );
         setMobilePage("history");
         setLoading(false);
         setResponse(null);
@@ -154,6 +157,7 @@ export default function App() {
               }}
               InputProps={{
                 disableUnderline: true,
+                className: "font-serif",
                 sx: {
                   fontSize: "20px",
                   fontWeight: 600,
@@ -309,8 +313,8 @@ export default function App() {
                     }}
                     onClick={() => {
                       ref.current.focus();
-                      setMobilePage("history");
                       ref.current.select();
+                      setMobilePage("history");
                     }}
                   >
                     <Icon>edit</Icon>
@@ -362,7 +366,7 @@ export default function App() {
                     }}
                     onClick={() => {
                       navigator.clipboard.writeText(response.response);
-                      toast.success("Copied to clipboard");
+                      toast.success("Copied to clipboard", toastStyles);
                     }}
                   >
                     <Icon>content_copy</Icon>

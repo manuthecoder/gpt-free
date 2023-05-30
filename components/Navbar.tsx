@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export function Navbar({
   loading,
@@ -23,6 +24,20 @@ export function Navbar({
   setMobilePage,
 }: any) {
   const [open, setOpen] = useState(false);
+
+  useHotkeys(
+    "escape",
+    (e) => {
+      e.preventDefault();
+      setMobilePage("history");
+      setHistory([]);
+      setResponse(null);
+      setPrompt("");
+    },
+    {
+      enableOnFormTags: true,
+    }
+  );
 
   useEffect(() => {
     document
@@ -44,6 +59,12 @@ export function Navbar({
             maxWidth: "500px",
             borderRadius: "20px 20px 0 0",
             mx: "auto",
+          },
+        }}
+        BackdropProps={{
+          sx: {
+            background: "hsla(240,11%,12%,0.5)",
+            backdropFilter: "blur(10px)",
           },
         }}
       >
@@ -88,20 +109,18 @@ export function Navbar({
             >
               <Icon>west</Icon>
             </IconButton>
-            {mobilePage !== "history" && (
-              <IconButton
-                disabled={loading}
-                onClick={() => {
-                  setMobilePage("history");
-                  setHistory([]);
-                  setResponse(null);
-                  setPrompt("");
-                }}
-                sx={{ display: { xs: "none", sm: "flex" } }}
-              >
-                <Icon>close</Icon>
-              </IconButton>
-            )}
+            <IconButton
+              disabled={loading}
+              onClick={() => {
+                setMobilePage("history");
+                setHistory([]);
+                setResponse(null);
+                setPrompt("");
+              }}
+              sx={{ display: { xs: "none", sm: response ? "flex" : "none" } }}
+            >
+              <Icon>close</Icon>
+            </IconButton>
             <Typography
               sx={{
                 display: "flex",
@@ -111,10 +130,21 @@ export function Navbar({
                 alignItems: "center",
               }}
             >
-              mGPT <Chip label="v2.0" size="small" />
+              <span
+                style={{
+                  background: "linear-gradient(90deg, #007AFF, #00FFA3)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  animation: "gradient .3s ease infinite",
+                  fontWeight: 700,
+                }}
+              >
+                mGPT
+              </span>{" "}
+              <Chip label="v2.0" size="small" />
             </Typography>
             <IconButton onClick={() => setOpen(true)}>
-              <Icon>info</Icon>
+              <Icon>help</Icon>
             </IconButton>
           </Toolbar>
         </NoSsr>
