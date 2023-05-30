@@ -19,6 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -63,6 +64,7 @@ export default function App() {
         setHistory(current);
         setLoading(false);
       } catch (e) {
+        toast.error("Yikes! mGPT couldn't think! Please try again later.");
         setMobilePage("history");
         setLoading(false);
         setResponse(null);
@@ -346,8 +348,24 @@ export default function App() {
                     p: 3,
                     mt: 4,
                     borderRadius: 5,
+                    position: "relative",
                   }}
                 >
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      m: 3,
+                      color: "hsl(240,11%,80%)",
+                    }}
+                    onClick={() => {
+                      navigator.clipboard.writeText(response.response);
+                      toast.success("Copied to clipboard");
+                    }}
+                  >
+                    <Icon>content_copy</Icon>
+                  </IconButton>
                   <Typography
                     id="response"
                     sx={{

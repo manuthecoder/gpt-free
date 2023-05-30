@@ -3,7 +3,7 @@
 
 body {
   user-select: none;
-  background: hsl(240, 11%, 10%)!important;
+  background: hsl(240, 11%, 10%) !important;
 }
 
 .MuiIcon-root {

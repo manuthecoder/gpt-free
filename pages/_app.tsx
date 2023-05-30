@@ -1,5 +1,14 @@
+import { useOnlineStatus } from "@/lib/useOnlineStatus";
 import "@/styles/globals.css";
-import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import {
+  Backdrop,
+  createTheme,
+  CssBaseline,
+  Icon,
+  NoSsr,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
@@ -38,6 +47,8 @@ export const toastStyles = {
 };
 
 export default function App({ Component, pageProps }: AppProps) {
+  const isOnline = useOnlineStatus();
+
   return (
     <ThemeProvider theme={theme}>
       <Head>
@@ -46,6 +57,29 @@ export default function App({ Component, pageProps }: AppProps) {
       <Toaster />
       <Component {...pageProps} />
       <CssBaseline />
+      <NoSsr>
+        <Backdrop
+          open={!isOnline}
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              background: "hsla(240,11%,12%,0.6)!important",
+              gap: 2,
+            }}
+          >
+            <Icon>cloud_off</Icon>
+            <span className="font-serif">You&apos;re offline</span>
+          </Typography>
+        </Backdrop>
+      </NoSsr>
     </ThemeProvider>
   );
 }
