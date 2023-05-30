@@ -79,7 +79,12 @@ export function Navbar({
           <Toolbar sx={{ height: "64px" }}>
             <IconButton
               onClick={() => setMobilePage("history")}
-              sx={{ display: { sm: "none" } }}
+              sx={{
+                display: {
+                  xs: mobilePage === "history" ? "none" : "flex",
+                  sm: "none",
+                },
+              }}
             >
               <Icon>west</Icon>
             </IconButton>

@@ -309,6 +309,7 @@ export default function App() {
                     }}
                     onClick={() => {
                       ref.current.focus();
+                      setMobilePage("history");
                       ref.current.select();
                     }}
                   >
