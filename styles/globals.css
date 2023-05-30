@@ -6,6 +6,11 @@ body {
   background: hsl(240, 11%, 10%) !important;
 }
 
+::selection {
+  background: rgb(2, 195, 233);
+  color: black;
+}
+
 .MuiIcon-root {
   font-family: "Material Symbols Outlined" !important;
   font-weight: normal;

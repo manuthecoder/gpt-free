@@ -83,7 +83,6 @@ export default function App() {
 
   useEffect(() => {
     setResponse(history[history.length - 1]);
-    ref.current.select();
     setTimeout(() => {
       document.querySelector("#response")?.scrollIntoView({
         behavior: "smooth",
