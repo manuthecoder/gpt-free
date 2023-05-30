@@ -1,287 +1,416 @@
-import Head from "next/head";
-import {
-  useState,
-  useDeferredValue,
-  useCallback,
-  useRef,
-  useEffect,
-} from "react";
-import { LoadingButton } from "@mui/lab";
+import { History } from "@/components/History";
+import { Navbar } from "@/components/Navbar";
+import { Sponsor } from "@/components/Sponsor";
 import {
   Box,
-  Button,
-  Typography,
-  Collapse,
-  InputAdornment,
-  TextField,
-  Skeleton,
-  Alert,
-  Link,
+  Chip,
+  CircularProgress,
+  Grid,
+  Icon,
   IconButton,
+  Skeleton,
+  TextField,
+  Typography,
 } from "@mui/material";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { toast } from "react-hot-toast";
+import { toastStyles } from "./_app";
+import { useHotkeys } from "react-hotkeys-hook";
 
-const toastStyles = {
-  style: {
-    borderRadius: "25px",
-    paddingLeft: "15px",
-    background: "hsla(240,11%,20%, 0.9)",
-    backdropFilter: "blur(10px)",
-    color: "hsl(240,11%,90%)",
-  },
-  iconTheme: {
-    primary: "hsl(240,11%,90%)",
-    secondary: "hsl(240,11%,30%)",
-  },
-};
+interface Chat {
+  prompt: string;
+  response: string;
+}
 
-export default function Home() {
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export default function App() {
+  const [mobilePage, setMobilePage] = useState<"history" | "chat">("history");
+  const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: any) =>
+    setPrompt(capitalizeFirstLetter(e.target.value));
+  const deferredPrompt = useDeferredValue(prompt);
+
+  const [history, setHistory] = useState<Chat[]>([]);
+  const [response, setResponse] = useState<"loading" | null | Chat>(null);
+
+  const handleSubmit = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      if (prompt.trim() == "") return;
+      try {
+        setLoading(true);
+        setResponse("loading");
+        setMobilePage("chat");
+
+        const data: any = await fetch("/api/chat", {
+          method: "POST",
+          body: JSON.stringify({ prompt }),
+        }).then((res) => res.text());
+
+        const current = [...history, { prompt, response: data }];
+        console.log("Current: ", current);
+        setHistory(current);
+        setLoading(false);
+      } catch (e) {
+        toast.error(
+          "Yikes! mGPT couldn't think! Please try again later.",
+          toastStyles
+        );
+        setMobilePage("history");
+        setLoading(false);
+        setResponse(null);
+      }
+    },
+    [history, prompt]
+  );
+
+  useHotkeys("ctrl+enter", handleSubmit, { enableOnFormTags: true });
+
   const ref: any = useRef();
-  const [value, setValue] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [response, setResponse] = useState<any>(null);
-  const deferredValue = useDeferredValue(value);
-
-  const handleChange = useCallback((e: any) => {
-    let str = e.target.value.substring(0, 100000);
-    if (str.length === 1) str = str.toUpperCase();
-    setValue(str);
-  }, []);
 
   useEffect(() => {
-    ref.current?.focus();
-  }, []);
+    setResponse(history[history.length - 1]);
+    setTimeout(() => {
+      document.querySelector("#response")?.scrollIntoView({
+        behavior: "smooth",
+      });
+    }, 100);
+  }, [history]);
 
-  const handleSubmit = useCallback(async () => {
-    try {
-      if (deferredValue.trim() == "") return;
-      setLoading(true);
-
-      const data = await fetch("/api/ask", {
-        method: "POST",
-        body: JSON.stringify({ prompt: deferredValue }),
-      }).then((res) => res.json());
-
-      setLoading(false);
-
-      setResponse(data);
-    } catch (e) {
-      toast.error(
-        "Yikes! mGPT could not think properly (possible because we are at capacity)! Please try again later",
-        toastStyles
-      );
-      setLoading(false);
-      setResponse(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
     }
-  }, [deferredValue]);
+  }, []);
 
   return (
     <>
-      <Head>
-        <title>mGPT &bull; Manu&apos;s mini ChatGPT clone</title>
-        <meta
-          name="description"
-          content="mGPT is a mini, unblocked lightweight ChatGPT clone"
-        />{" "}
-        <meta name="theme-color" content="#17171c" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <Box
+      <Navbar
+        response={response}
+        setHistory={setHistory}
+        mobilePage={mobilePage}
+        setMobilePage={setMobilePage}
+        setPrompt={setPrompt}
+        setResponse={setResponse}
+        loading={loading}
+      />
+      <Grid
+        container
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#17171c",
-          height: "100vh",
-          width: "100vw",
+          mt: "64px",
+          height: "calc(100vh - 64px)",
+          background: "hsl(240, 11%, 10%)",
         }}
       >
-        <Box
+        <Grid
+          item
+          xs={12}
+          sm={response ? 4 : 12}
           sx={{
-            width: "500px",
-            maxWidth: "calc(100vw - 30px)",
-            display: "flex",
-            gap: 2,
+            maxHeight: "calc(100vh - 64px)",
+            overflow: "auto",
             flexDirection: "column",
+            py: 4,
+            display: {
+              xs: mobilePage == "history" ? "flex" : "none",
+              sm: "flex",
+            },
             alignItems: "center",
-            justifyContent: { xs: "end", sm: "center" },
-            height: "calc(100vh - 50px)",
+            justifyContent: history.length > 0 ? "" : "center",
+            background: `hsl(240, 11%, ${response ? 12 : 10}%)`,
+            width: "100%",
+            gap: 2,
           }}
         >
-          <TextField
-            inputRef={ref}
-            multiline
-            fullWidth
-            value={value}
-            placeholder="Ask mGPT..."
-            variant="standard"
-            maxRows={5}
-            onChange={handleChange}
-            onKeyDown={(e) => {
-              if (e.shiftKey && e.key === "Enter") {
-                setValue(value + "\n");
-                e.preventDefault();
-              } else if (!e.shiftKey && e.key === "Enter") {
-                e.preventDefault();
-                handleSubmit();
-              }
-            }}
-            disabled={loading}
-            InputProps={{
-              disableUnderline: true,
-              endAdornment: (
-                <InputAdornment
-                  position="end"
-                  sx={{
-                    height: "100%",
-                    mt: "auto",
-                  }}
-                >
-                  {deferredValue !== "" && (
-                    <IconButton
-                      sx={{
-                        background: "transparent",
-                        transition: "none",
-                        mr: 1.5,
-                        opacity: 0.6,
-                      }}
-                      size="small"
-                      onClick={() => {
-                        setValue("");
-                        setResponse(null);
-                      }}
-                    >
-                      <span className="material-symbols-outlined">close</span>
-                    </IconButton>
-                  )}
-                  <LoadingButton
-                    loading={loading}
-                    onClick={handleSubmit}
-                    disabled={deferredValue.trim() == ""}
-                    color="inherit"
-                    sx={{
-                      background: "hsl(240,11%,17%)!important",
-                      "&:hover": {
-                        background: "hsl(240,11%,17%)",
-                      },
-                      "&:active": {
-                        transform: "scale(.97)",
-                      },
-                      transition: "scale .2s",
-                      px: 2,
-                      borderRadius: 999,
-                    }}
-                  >
-                    Send
-                  </LoadingButton>
-                </InputAdornment>
-              ),
-              sx: {
-                fontSize: { xs: "17px", sm: "20px" },
-                p: 2,
-                background: "hsl(240,11%,13%)",
-                border: "1px solid hsl(240,11%,20%)",
-                borderRadius: 3,
-              },
-            }}
-          />
-
           <Box
             sx={{
-              order: -1,
-              textAlign: "center",
-              display: {
-                xs: Boolean(response) ? "none" : "flex",
-                sm: "flex",
-              },
-              height: { xs: "100%", sm: "auto" },
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: { xs: "center" },
-            }}
-          >
-            <Typography sx={{ mb: 1 }} variant="h2">
-              mGPT
-            </Typography>
-            <Typography gutterBottom>
-              Mini ChatGPT clone built by{" "}
-              <Link href="https://linkedin.com/in/manu-codes">
-                Manu
-                <span
-                  style={{
-                    verticalAlign: "middle",
-                    marginLeft: "4px",
-                  }}
-                  className="material-symbols-outlined"
-                >
-                  north_east
-                </span>
-              </Link>
-            </Typography>
-          </Box>
-          <Collapse
-            in={Boolean(response) || loading}
-            orientation="vertical"
-            sx={{
-              order: { xs: -1, sm: 0 },
-              borderRadius: 3,
-              width: "100%",
-              overflowY: "scroll",
-              height: { xs: "100%", sm: "auto" },
-              flexGrow: { xs: 1, sm: "unset" },
+              width: "500px",
+              background: "hsl(240,11%,15%)",
+              maxWidth: "calc(100% - 50px)",
+              display: "flex",
+              borderRadius: 5,
+              px: 3,
+              py: 2,
               maxHeight: "100%",
-              fontSize: "17px",
-              background: "hsl(240,11%,13%)",
-              border: "1px solid hsl(240,11%,20%)",
+              alignItems: "center",
             }}
           >
-            <Box
-              sx={{
-                p: 2,
+            <TextField
+              disabled={loading}
+              inputRef={ref}
+              autoFocus
+              value={prompt}
+              onChange={handleChange}
+              onKeyDown={(e) => {
+                if (!e.shiftKey && e.code == "Enter") handleSubmit(e);
               }}
+              InputProps={{
+                disableUnderline: true,
+                className: "font-serif",
+                sx: {
+                  fontSize: "20px",
+                  fontWeight: 600,
+                },
+              }}
+              maxRows={5}
+              variant="standard"
+              placeholder="Ask mGPT..."
+              fullWidth
+              multiline
+            />
+            <IconButton
+              onClick={handleSubmit}
+              sx={{
+                mt: "auto",
+                ...(deferredPrompt.trim() !== "" && {
+                  background: "#007AFF!important",
+                }),
+                ...(loading && {
+                  background: "rgba(255,255,255,0.05)!important",
+                }),
+                transform: `rotate(${
+                  deferredPrompt.trim() !== "" ? "90deg" : "0deg"
+                })`,
+                transition: "transform .2s, opacity .2s",
+              }}
+              disabled={deferredPrompt.trim() == "" || loading}
             >
-              <Typography
-                sx={{
-                  display: "flex",
-                  gap: 2,
-                  mb: 1,
-                  color: "#46b528",
-                  fontWeight: "700",
-                }}
-              >
-                <span className="material-symbols-outlined">south_east</span>
-                mGPT
-              </Typography>
               {loading ? (
-                <Box>
-                  <Skeleton animation="wave" width="70%" />
-                  <Skeleton animation="wave" width="100%" />
-                  <Skeleton animation="wave" width="90%" />
-                  <Skeleton animation="wave" width="80%" />
-
-                  <Alert severity="info" sx={{ mt: 2, borderRadius: 5 }}>
-                    <Typography>While you wait...</Typography>
-                    <Typography variant="body2">
-                      Check out <Link target="_blank">Dysperse</Link>, and how
-                      it can increase your productivity for free!
-                    </Typography>
-                  </Alert>
-                </Box>
+                <CircularProgress size={24} thickness={6} color="inherit" />
               ) : (
-                response &&
-                response.response && (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {response.response.replaceAll("Raycast AI", "mGPT")}
-                  </ReactMarkdown>
-                )
+                <Icon>
+                  {response &&
+                  response !== "loading" &&
+                  prompt == response.prompt
+                    ? "autorenew"
+                    : "arrow_upward"}
+                </Icon>
               )}
-            </Box>
-          </Collapse>
-        </Box>
-      </Box>
+            </IconButton>
+          </Box>
+          <Box
+            sx={{
+              display: history.length > 0 ? "none" : "flex",
+              gap: 2,
+              flexWrap: "wrap",
+              width: "500px",
+              maxWidth: "calc(100% - 50px)",
+              alignItems: "center",
+              // justifyContent: "center",
+              px: 2,
+              overflowX: "auto",
+            }}
+          >
+            {[
+              "Write a paragraph about the history of the United States",
+              "Explain quantum computing in simple terms",
+              "Got any creative ideas for a 10 year old's birthday?",
+              "How do I make an HTTP request in Javascript?",
+            ].map((prompt) => (
+              <Chip
+                disabled={loading}
+                icon={<Icon>search</Icon>}
+                onClick={() => setPrompt(prompt)}
+                label={prompt}
+                key={prompt}
+              />
+            ))}
+          </Box>
+
+          {history.length > 0 && (
+            <History
+              setMobilePage={setMobilePage}
+              setHistory={setHistory}
+              loading={loading}
+              history={history}
+              setPrompt={setPrompt}
+              setResponse={setResponse}
+            />
+          )}
+          {response && <Sponsor />}
+        </Grid>
+        {response && (
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            sx={{
+              borderLeft: "2px solid hsl(240,11%,12%)",
+              maxHeight: "calc(100vh - 64px)",
+              overflow: "auto",
+              display: {
+                xs: mobilePage == "chat" ? "block" : "none",
+                sm: "block",
+              },
+              height: { xs: "calc(100vh - 64px)", sm: "100%" },
+            }}
+          >
+            {response === "loading" ? (
+              <Box sx={{ p: 3 }}>
+                <Skeleton
+                  variant="rectangular"
+                  width="200px"
+                  animation="wave"
+                  height={50}
+                  sx={{ borderRadius: 90, mb: 2 }}
+                />
+                {[...new Array(5)].map((_, i) => (
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    width="100%"
+                    height={30}
+                    key={i}
+                    sx={{ borderRadius: 90, mb: 2 }}
+                  />
+                ))}
+                <Skeleton
+                  variant="rectangular"
+                  animation="wave"
+                  width="200px"
+                  height={50}
+                  sx={{ mt: 4, mb: 2, borderRadius: 90 }}
+                />
+                {[...new Array(5)].map((_, i) => (
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    width="100%"
+                    height={30}
+                    key={i}
+                    sx={{ borderRadius: 90, mb: 2 }}
+                  />
+                ))}
+              </Box>
+            ) : (
+              <Box sx={{ p: 3, pt: 4 }}>
+                <Box
+                  sx={{
+                    background: "hsl(240,11%,15%)",
+                    p: 3,
+                    borderRadius: 5,
+                    position: "relative",
+                  }}
+                >
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      m: 3,
+                      color: "hsl(240,11%,80%)",
+                    }}
+                    onClick={() => {
+                      ref.current.focus();
+                      ref.current.select();
+                      setMobilePage("history");
+                    }}
+                  >
+                    <Icon>edit</Icon>
+                  </IconButton>
+                  <Typography
+                    sx={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 2,
+                      mb: 2,
+                      fontWeight: 700,
+                      color: "hsl(240,11%,80%)",
+                    }}
+                    variant="h6"
+                  >
+                    <Icon>south_east</Icon>You
+                  </Typography>
+                  <div
+                    className="prose lg:prose-lg prose-dark prose-invert"
+                    style={{
+                      userSelect: "text",
+                    }}
+                  >
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      linkTarget="_blank"
+                    >
+                      {response.prompt}
+                    </ReactMarkdown>
+                  </div>
+                </Box>
+                <Box
+                  id="response"
+                  sx={{
+                    background: "hsl(240,11%,15%)",
+                    p: 3,
+                    mt: 4,
+                    borderRadius: 5,
+                    position: "relative",
+                  }}
+                >
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      m: 3,
+                      color: "hsl(240,11%,80%)",
+                    }}
+                    onClick={() => {
+                      navigator.clipboard.writeText(response.response);
+                      toast.success("Copied to clipboard", toastStyles);
+                    }}
+                  >
+                    <Icon>content_copy</Icon>
+                  </IconButton>
+                  <Typography
+                    id="response"
+                    sx={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 2,
+                      mb: 1,
+                      fontWeight: 700,
+                      background: "linear-gradient(90deg, #007AFF, #00FFA3)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      animation: "gradient .3s ease infinite",
+                    }}
+                    variant="h6"
+                  >
+                    <Icon>south_east</Icon>mGPT
+                  </Typography>
+                  <div
+                    className="prose lg:prose-lg prose-dark prose-invert"
+                    style={{
+                      userSelect: "text",
+                    }}
+                  >
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      linkTarget="_blank"
+                    >
+                      {response.response
+                        .replaceAll("Raycast", "mGPT")
+                        .replaceAll("raycast", "mGPT")}
+                    </ReactMarkdown>
+                  </div>
+                </Box>
+              </Box>
+            )}
+          </Grid>
+        )}
+      </Grid>
     </>
   );
 }

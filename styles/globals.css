@@ -1,29 +1,90 @@
+@tailwind components;
+@tailwind utilities;
+
+body {
+  user-select: none;
+  background: hsl(240, 11%, 10%) !important;
+}
+
+::selection {
+  background: rgb(2, 195, 233);
+  color: black;
+}
+
+.MuiIcon-root {
+  font-family: "Material Symbols Outlined" !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  color-scheme: dark;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+*:not(
+    .MuiIcon-root,
+    .MuiIcon-root *,
+    .font-serif,
+    .font-serif *,
+    code,
+    code *,
+    blockquote,
+    blockquote *
+  ) {
+  font-family: "Work Sans", sans-serif !important;
+}
+.font-serif,
+.font-serif *,
+blockquote,
+blockquote * {
+  font-family: "Fraunces", serif !important;
+}
+
+blockquote {
+  border-left: 2px solid hsl(240, 11%, 70%) !important;
+}
+td,
+tr,
+th {
+  padding: 10px !important;
+  border: 2px solid hsl(240, 11%, 30%) !important;
+}
+table {
+  border-collapse: collapse;
+}
+
 .MuiTouchRipple-rippleVisible {
   animation-duration: 0.25s !important;
 }
 
-body,
-html {
-  color-scheme: dark;
-  background: hsl(240, 11%, 10%);
-}
 .MuiTouchRipple-child {
   filter: opacity(0.3) !important;
-  background: hsl(240, 11%, 90%);
+  background: hsl(240, 11%, 10%);
 }
 
-*:not(
-    .override-font,
-    .override-font *,
-    .material-symbols-outlined,
-    .material-symbols-outlined *
-  ) {
-  font-family: "DM Sans", sans-serif !important;
+.rippleDark .MuiTouchRipple-child,
+.dark .MuiTouchRipple-child {
+  background: #fff !important;
 }
-
-* {
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-}
-::-webkit-scrollbar {
-  display: none
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
