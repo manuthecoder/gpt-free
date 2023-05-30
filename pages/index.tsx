@@ -23,6 +23,7 @@ import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toastStyles } from "./_app";
+import { useHotkeys } from "react-hotkeys-hook";
 
 interface Chat {
   prompt: string;
@@ -75,6 +76,8 @@ export default function App() {
     },
     [history, prompt]
   );
+
+  useHotkeys("ctrl+enter", handleSubmit, { enableOnFormTags: true });
 
   const ref: any = useRef();
 

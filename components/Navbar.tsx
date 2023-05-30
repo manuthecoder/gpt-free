@@ -38,6 +38,7 @@ export function Navbar({
       enableOnFormTags: true,
     }
   );
+  
 
   useEffect(() => {
     document
